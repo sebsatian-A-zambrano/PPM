@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda PPM</title>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .calendar {
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            max-width: 100wh;
+            width: 100%;
+        }
+
+        .header {
+            background: #007bff;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+        }
+
+        .day,
+        .date {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .day {
+            background: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+
+        .date {
+            background: #f4f4f4;
+            cursor: default;
+        }
+
+        .date:hover {
+            background: #e0e0e0;
+        }
+
+        .selected {
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .event {
+            font-size: 0.9em;
+            margin-top: 5px;
+            background: #e0f7fa;
+            border-left: 4px solid #007bff;
+            padding: 5px;
+            border-radius: 3px;
+            color: #007bff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="calendar">
+        <div class="header">
+            <h2>Parada Mensal Janeiro 2025</h2>
+        </div>
+        <div class="grid" id="calendar-grid">
+            <!-- Days of the week will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        const events = [
+            { id: 1, title: 'Feriado Ano novo', date: 1, description: 'Team meeting' },
+            { id: 2, title: 'PPG BP2 Ultima PPM 24/12', date: 2, description: 'John\'s birthday' },
+            { id: 3, title: 'PPG BP2 Ultima PPM 24/12', date: 3, description: 'John\'s birthday' },
+            { id: 4, title: 'MDF1 - Ultima PPM 24/12', date: 5, description: 'John\'s birthday' },
+            { id: 5, title: 'PPM MDF1 PPG BP2 Ultima PPM/G 24/12', date: 6, description: 'John\'s birthday' },
+            { id: 6, title: 'Troca Disco FA2 - PPG BP2 - PPM MDF1 Ultima PPM/G 24/12', date: 7, description: 'John\'s birthday' },
+            { id: 7, title: 'PPG BP2 Ultima 24/12', date: 8, description: 'John\'s birthday' },
+            { id: 8, title: 'Lixadeira FA2 - 24/12', date: 9, description: 'John\'s birthday' },
+            { id: 9, title: 'PPG BP2 Ultima 24/12', date: 10, description: 'John\'s birthday' },
+            { id: 10, title: 'PPG BP2 Ultima 24/12', date: 13, description: 'John\'s birthday' },
+            { id: 11, title: 'Serra Cut Size FA2 - PPG BP2 Ultima 24/12', date: 14, description: 'John\'s birthday' },
+            { id: 12, title: 'Embalagem 57 - PPG BP2 Ultima 24/12', date: 15, description: 'John\'s birthday' },
+            { id: 13, title: 'Embalagem 58 - PPG BP2 Ultima 24/12', date: 16, description: 'John\'s birthday' },
+            { id: 14, title: 'PPG BP2 Ultima 24/12', date: 17, description: 'John\'s birthday' },
+            { id: 15, title: 'MDF2 - PPG BP2 Ultima 24/12', date: 20, description: 'John\'s birthday' },
+            { id: 15, title: 'MDF2 - PPG BP2 Ultima 24/12', date: 21, description: 'John\'s birthday' },
+            { id: 15, title: 'MDF2 Ultima 24/12', date: 22, description: 'John\'s birthday' },
+            { id: 15, title: 'MDF2 Ultima 24/12', date: 23, description: 'John\'s birthday' },
+            { id: 15, title: 'PPM BP4 Ultima 24/12', date: 24, description: 'John\'s birthday' },
+            { id: 15, title: 'PPM BP1 Ultima 24/12', date: 27, description: 'John\'s birthday' },
+            { id: 15, title: 'PPM USI2 Ultima 24/12', date: 29, description: 'John\'s birthday' },
+            { id: 15, title: 'PPM IMPREG1 Ultima 24/12', date: 31, description: 'John\'s birthday' },
+            
+        ];
+
+        const daysOfWeek = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sabado']; // Días de la semana
+        const daysInMonth = Array.from({ length: 31 }, (_, i) => i + 1); // Días del mes
+
+        const calendarGrid = document.getElementById('calendar-grid');
+
+        // Renderizar días de la semana
+        daysOfWeek.forEach(day => {
+            const dayDiv = document.createElement('div');
+            dayDiv.className = 'day';
+            dayDiv.textContent = day;
+            calendarGrid.appendChild(dayDiv);
+        });
+
+        // Rellenar espacios vacíos para alinear correctamente los días
+        const fillEmptySpaces = () => {
+            const offset = 3; // Ajuste para que el primer día sea miércoles (miércoles es el cuarto día (índice 3))
+            for (let i = 0; i < offset; i++) {
+                const emptyDiv = document.createElement('div');
+                emptyDiv.className = 'date';
+                calendarGrid.appendChild(emptyDiv);
+            }
+        };
+
+        fillEmptySpaces();
+
+        // Renderizar fechas y eventos
+        daysInMonth.forEach(day => {
+            const dateDiv = document.createElement('div');
+            dateDiv.className = 'date';
+            dateDiv.textContent = day;
+
+            // Añadir eventos a la fecha correspondiente
+            events.filter(event => event.date === day).forEach(event => {
+                const eventDiv = document.createElement('div');
+                eventDiv.className = 'event';
+                dateDiv.appendChild(eventDiv);
+                eventDiv.textContent = event.title;
+            });
+
+            calendarGrid.appendChild(dateDiv);
+        });
+    </script>
+</body>
+
+</html>
